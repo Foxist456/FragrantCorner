@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fragrant Corner — Artisan Coffee Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#F5F0E8',
+            espresso: '#2C1A12',
+            mocha: '#5C3D2E',
+            latte: '#C4A882',
+            caramel: '#D4A574',
+            foam: '#EDE6DA',
+            roast: '#8B6914',
+            warmgray: '#A89B8C',
+          },
+          fontFamily: {
+            display: ['Playfair Display', 'serif'],
+            body: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #F5F0E8; }
+    ::-webkit-scrollbar-thumb { background: #C4A882; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #5C3D2E; }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .fade-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .hero-bg {
+      background-image: url('http://static.photos/food/1200x630/77');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    @keyframes steam {
+      0% { opacity: 0; transform: translateY(0) scaleX(1); }
+      15% { opacity: 1; }
+      50% { opacity: 0.6; transform: translateY(-20px) scaleX(1.4); }
+      100% { opacity: 0; transform: translateY(-40px) scaleX(1.8); }
+    }
+    .steam-line {
+      animation: steam 2.5s ease-in-out infinite;
+    }
+    .steam-line:nth-child(2) { animation-delay: 0.5s; }
+    .steam-line:nth-child(3) { animation-delay: 1s; }
+
+    .menu-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .menu-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(44, 26, 18, 0.15);
+    }
+
+    .nav-link {
+      position: relative;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #D4A574;
+      transition: width 0.3s ease, left 0.3s ease;
+    }
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .testimonial-track {
+      transition: transform 0.5s ease;
+    }
+
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(5deg); }
+    }
+    .float-anim {
+      animation: float 4s ease-in-out infinite;
+    }
+    .float-anim-delay {
+      animation: float 4s ease-in-out infinite;
+      animation-delay: 1.5s;
+    }
+
+    .toast {
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .cat-btn.active-cat {
+      background-color: #5C3D2E;
+      color: #F5F0E8;
+    }
+  </style>
+</head>
+<body class="bg-cream text-espresso">
+
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="#home" class="flex items-center gap-3 group">
+          <div class="relative">
+            <i data-lucide="coffee" class="w-8 h-8 text-caramel transition-transform group-hover:rotate-12 duration-300"></i>
+          </div>
+          <span class="font-display text-2xl font-bold text-espresso">Fragrant<span class="text-caramel">Corner</span></span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#home" class="nav-link text-sm font-medium text-espresso hover:text-caramel transition-colors">Home</a>
+          <a href="#menu" class="nav-link text-sm font-medium text-espresso hover:text-caramel transition-colors">Menu</a>
+          <a href="#about" class="nav-link text-sm font-medium text-espresso hover:text-caramel transition-colors">Our Story</a>
+          <a href="#testimonials" class="nav-link text-sm font-medium text-espresso hover:text-caramel transition-colors">Reviews</a>
+          <a href="#visit" class="nav-link text-sm font-medium text-espresso hover:text-caramel transition-colors">Visit Us</a>
+          <a href="#contact" class="bg-caramel text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-mocha transition-colors shadow-lg shadow-caramel/25">Order Now</a>
+        </div>
+
+        <button id="menuToggle" class="md:hidden p-2 rounded-lg hover:bg-latte/20 transition-colors">
+          <i data-lucide="menu" class="w-6 h-6 text-espresso" id="menuIcon"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-50 bg-cream/98 backdrop-blur-lg md:hidden">
+    <div class="flex flex-col h-full">
+      <div class="flex items-center justify-between px-6 h-20">
+        <a href="#home" class="flex items-center gap-3">
+          <i data-lucide="coffee" class="w-8 h-8 text-caramel"></i>
+          <span class="font-display text-2xl font-bold text-espresso">Fragrant<span class="text-caramel">Corner</span></span>
+        </a>
+        <button id="menuClose" class="p-2 rounded-lg hover:bg-latte/20 transition-colors">
+          <i data-lucide="x" class="w-6 h-6 text-espresso"></i>
+        </button>
+      </div>
+      <div class="flex flex-col items-center justify-center flex-1 gap-8">
+        <a href="#home" class="mobile-link font-display text-3xl font-semibold text-espresso hover:text-caramel transition-colors">Home</a>
+        <a href="#menu" class="mobile-link font-display text-3xl font-semibold text-espresso hover:text-caramel transition-colors">Menu</a>
+        <a href="#about" class="mobile-link font-display text-3xl font-semibold text-espresso hover:text-caramel transition-colors">Our Story</a>
+        <a href="#testimonials" class="mobile-link font-display text-3xl font-semibold text-espresso hover:text-caramel transition-colors">Reviews</a>
+        <a href="#visit" class="mobile-link font-display text-3xl font-semibold text-espresso hover:text-caramel transition-colors">Visit Us</a>
+        <a href="#contact" class="bg-caramel text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-mocha transition-colors mt-4">Order Now</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="home" class="relative min-h-screen flex items-center hero-bg">
+    <div class="absolute inset-0 bg-gradient-to-b from-espresso/60 via-espresso/40 to-espresso/70"></div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+      <div class="max-w-2xl">
+        <div class="flex items-end gap-1 mb-4 h-10">
+          <div class="steam-line w-1 h-6 bg-white/40 rounded-full"></div>
+          <div class="steam-line w-1 h-8 bg-white/40 rounded-full"></div>
+          <div class="steam-line w-1 h-5 bg-white/40 rounded-full"></div>
+        </div>
+        <p class="text-caramel font-medium tracking-widest uppercase text-sm mb-4 fade-up">Since 2018 — Artisan Coffee</p>
+        <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 fade-up">
+          Where Every Cup<br>Tells a <span class="text-caramel italic">Story</span>
+        </h1>
+        <p class="text-white/80 text-lg sm:text-xl leading-relaxed mb-8 max-w-lg fade-up">
+          Handcrafted beverages made with ethically sourced beans, brewed with passion, and served with love in every fragrant cup.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 fade-up">
+          <a href="#menu" class="bg-caramel text-white px-8 py-4 rounded-full font-semibold text-center hover:bg-mocha transition-all shadow-xl shadow-caramel/30 flex items-center justify-center gap-2">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+            Explore Our Menu
+          </a>
+          <a href="#about" class="border-2 border-white/40 text-white px-8 py-4 rounded-full font-semibold text-center hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="play-circle" class="w-5 h-5"></i>
+            Our Story
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+      <span class="text-white/60 text-xs tracking-widest uppercase">Scroll</span>
+      <div class="w-6 h-10 border-2 border-white/40 rounded-full flex items-start justify-center p-1.5">
+        <div class="w-1.5 h-3 bg-caramel rounded-full animate-bounce"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-espresso text-cream py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div class="flex flex-col items-center gap-2 fade-up">
+          <i data-lucide="leaf" class="w-6 h-6 text-caramel"></i>
+          <span class="text-sm font-medium">Organic Beans</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 fade-up">
+          <i data-lucide="hand-heart" class="w-6 h-6 text-caramel"></i>
+          <span class="text-sm font-medium">Fair Trade</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 fade-up">
+          <i data-lucide="chef-hat" class="w-6 h-6 text-caramel"></i>
+          <span class="text-sm font-medium">Handcrafted</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 fade-up">
+          <i data-lucide="heart" class="w-6 h-6 text-caramel"></i>
+          <span class="text-sm font-medium">Made with Love</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu" class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 fade-up">
+        <p class="text-caramel font-medium tracking-widest uppercase text-sm mb-3">Our Offerings</p>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold mb-4">The Menu</h2>
+        <p class="text-warmgray max-w-xl mx-auto">From single-origin espresso to creamy lattes and fresh pastries — discover your next favorite.</p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-3 mb-12 fade-up">
+        <button class="cat-btn active-cat px-5 py-2 rounded-full text-sm font-medium border border-mocha/30 transition-all hover:bg-mocha hover:text-cream" data-category="all">All</button>
+        <button class="cat-btn px-5 py-2 rounded-full text-sm font-medium border border-mocha/30 transition-all hover:bg-mocha hover:text-cream" data-category="coffee">Coffee</button>
+        <button class="cat-btn px-5 py-2 rounded-full text-sm font-medium border border-mocha/30 transition-all hover:bg-mocha hover:text-cream" data-category="tea">Tea</button>
+        <button class="cat-btn px-5 py-2 rounded-full text-sm font-medium border border-mocha/30 transition-all hover:bg-mocha hover:text-cream" data-category="pastry">Pastries</button>
+        <button class="cat-btn px-5 py-2 rounded-full text-sm font-medium border border-mocha/30 transition-all hover:bg-mocha hover:text-cream" data-category="special">Specials</button>
+      </div>
+
+      <div id="menuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="coffee">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/food/640x360/10" alt="Espresso" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Classic Espresso</h3>
+              <span class="text-caramel font-bold text-lg">$3.50</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Rich, bold single-origin shot with a velvety crema. The heart of every great coffee.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Strong</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">No Milk</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="coffee">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/food/640x360/22" alt="Cappuccino" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Cappuccino</h3>
+              <span class="text-caramel font-bold text-lg">$4.50</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Perfectly balanced espresso, steamed milk, and silky foam. A timeless Italian classic.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Foamy</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Medium</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="coffee">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/food/640x360/33" alt="Caramel Latte" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Caramel Latte</h3>
+              <span class="text-caramel font-bold text-lg">$5.50</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Smooth espresso with steamed milk and our house-made caramel drizzle. Pure indulgence.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Sweet</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Creamy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="coffee">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/food/640x360/44" alt="Cold Brew" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Cold Brew</h3>
+              <span class="text-caramel font-bold text-lg">$5.00</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Steeped for 18 hours for a smooth, low-acidity refreshment. Served over ice.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Iced</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Smooth</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="tea">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/nature/640x360/55" alt="Chai Latte" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Chai Latte</h3>
+              <span class="text-caramel font-bold text-lg">$4.50</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Warming spiced chai with steamed milk. Cinnamon, cardamom, and ginger harmony.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Spiced</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Warming</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="tea">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/nature/640x360/66" alt="Matcha" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Matcha Latte</h3>
+              <span class="text-caramel font-bold text-lg">$5.00</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Ceremonial-grade matcha whisked with oat milk. Earthy, vibrant, and energizing.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Earthy</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Vegan</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="pastry">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/food/640x360/78" alt="Croissant" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Butter Croissant</h3>
+              <span class="text-caramel font-bold text-lg">$3.00</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Flaky, golden layers of buttery goodness. Baked fresh every morning.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Fresh</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Flaky</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="pastry">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/food/640x360/89" alt="Cinnamon Roll" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Cinnamon Roll</h3>
+              <span class="text-caramel font-bold text-lg">$4.00</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Warm, gooey cinnamon swirl topped with cream cheese icing. Pure comfort.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Sweet</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Gooey</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card bg-foam rounded-2xl overflow-hidden fade-up" data-category="special">
+          <div class="h-48 overflow-hidden">
+            <img src="http://static.photos/food/640x360/90" alt="Seasonal Special" class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-display text-xl font-semibold">Lavender Honey Latte</h3>
+              <span class="text-caramel font-bold text-lg">$6.00</span>
+            </div>
+            <p class="text-warmgray text-sm leading-relaxed">Our signature seasonal blend — floral lavender paired with raw honey and espresso.</p>
+            <div class="flex items-center gap-2 mt-4">
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Seasonal</span>
+              <span class="bg-latte/30 text-mocha text-xs px-2 py-1 rounded-full">Floral</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="py-20 lg:py-28 bg-espresso text-cream overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="relative fade-left">
+          <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+            <img src="http://static.photos/people/640x360/42" alt="Our barista at work" class="w-full h-80 lg:h-[500px] object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-espresso/40 to-transparent"></div>
+          </div>
+          <div class="absolute -bottom-6 -right-4 lg:-right-8 bg-caramel text-white p-6 rounded-2xl shadow-xl float-anim">
+            <p class="font-display text-3xl font-bold">2+</p>
+            <p class="text-sm text-white/80">Years Brewing</p>
+          </div>
+          <div class="absolute -top-4 -left-4 w-16 h-16 bg-mocha/20 rounded-full float-anim-delay flex items-center justify-center">
+            <i data-lucide="coffee" class="w-8 h-8 text-caramel"></i>
+          </div>
+        </div>
+
+        <div class="fade-right">
+          <p class="text-caramel font-medium tracking-widest uppercase text-sm mb-3">Our Story</p>
+          <h2 class="font-display text-4xl lg:text-5xl font-bold mb-6">A Passion Born<br>from <span class="text-caramel italic">Ufa</span></h2>
+          <p class="text-cream/70 leading-relaxed mb-6">
+            Fragrant Corner started as a tiny corner spot with a big dream — to serve coffee that doesn't just wake you up, but moves you. Founded in 2026 by two friends who shared an obsession with the perfect brew, we've grown into a beloved neighborhood gathering place.
+          </p>
+          <p class="text-cream/70 leading-relaxed mb-8">
+            Every bean is hand-selected from sustainable farms across Ethiopia, Colombia, and Guatemala. We roast in small batches weekly to ensure peak freshness and flavor. From seed to cup, we pour our hearts into every step.
+          </p>
+          <div class="grid grid-cols-3 gap-6 mb-8">
+            <div class="text-center">
+              <p class="font-display text-3xl font-bold text-caramel">12</p>
+              <p class="text-cream/60 text-sm mt-1">Bean Origins</p>
+            </div>
+            <div class="text-center">
+              <p class="font-display text-3xl font-bold text-caramel">5K+</p>
+              <p class="text-cream/60 text-sm mt-1">Happy Customers</p>
+            </div>
+            <div class="text-center">
+              <p class="font-display text-3xl font-bold text-caramel">3</p>
+              <p class="text-cream/60 text-sm mt-1">Awards Won</p>
+            </div>
+          </div>
+          <a href="#visit" class="inline-flex items-center gap-2 bg-caramel text-white px-6 py-3 rounded-full font-semibold hover:bg-latte transition-colors">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+            Come Visit Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 fade-up">
+        <p class="text-caramel font-medium tracking-widest uppercase text-sm mb-3">From Farm to Cup</p>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold mb-4">Our Process</h2>
+        <p class="text-warmgray max-w-xl mx-auto">Every cup of Fragrant Corner coffee goes through a meticulous journey.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center fade-up">
+          <div class="w-20 h-20 bg-caramel/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="globe" class="w-10 h-10 text-caramel"></i>
+          </div>
+          <h3 class="font-display text-lg font-semibold mb-2">Source</h3>
+          <p class="text-warmgray text-sm leading-relaxed">Ethically sourced from the finest farms across three continents.</p>
+        </div>
+        <div class="text-center fade-up">
+          <div class="w-20 h-20 bg-caramel/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="flame" class="w-10 h-10 text-caramel"></i>
+          </div>
+          <h3 class="font-display text-lg font-semibold mb-2">Roast</h3>
+          <p class="text-warmgray text-sm leading-relaxed">Small-batch roasted weekly to unlock each bean's unique profile.</p>
+        </div>
+        <div class="text-center fade-up">
+          <div class="w-20 h-20 bg-caramel/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="droplets" class="w-10 h-10 text-caramel"></i>
+          </div>
+          <h3 class="font-display text-lg font-semibold mb-2">Brew</h3>
+          <p class="text-warmgray text-sm leading-relaxed">Precision brewing with calibrated temperature and pressure.</p>
+        </div>
+        <div class="text-center fade-up">
+          <div class="w-20 h-20 bg-caramel/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="heart" class="w-10 h-10 text-caramel"></i>
+          </div>
+          <h3 class="font-display text-lg font-semibold mb-2">Serve</h3>
+          <p class="text-warmgray text-sm leading-relaxed">Delivered to your hands with care, warmth, and a smile.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials" class="py-20 lg:py-28 bg-foam">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14 fade-up">
+        <p class="text-caramel font-medium tracking-widest uppercase text-sm mb-3">What People Say</p>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold mb-4">Loved by Many</h2>
+        <p class="text-warmgray max-w-xl mx-auto">Don't just take our word for it — hear from the people who make our day, every day.</p>
+      </div>
+
+      <div class="relative overflow-hidden fade-up">
+        <div id="testimonialTrack" class="testimonial-track flex">
+          <div class="w-full flex-shrink-0 px-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-3xl p-8 lg:p-12 shadow-lg">
+              <div class="flex items-center gap-1 mb-4">
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+              </div>
+              <p class="font-display text-xl lg:text-2xl italic text-espresso/80 leading-relaxed mb-6">"The lavender honey latte literally changed my life. I come here every morning and the baristas know my name. It's like a second home."</p>
+              <div class="flex items-center gap-4">
+                <img src="http://static.photos/people/200x200/11" alt="Sarah M." class="w-12 h-12 rounded-full object-cover">
+                <div>
+                  <p class="font-semibold">Sarah M.</p>
+                  <p class="text-warmgray text-sm">Regular since 2019</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-full flex-shrink-0 px-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-3xl p-8 lg:p-12 shadow-lg">
+              <div class="flex items-center gap-1 mb-4">
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+              </div>
+              <p class="font-display text-xl lg:text-2xl italic text-espresso/80 leading-relaxed mb-6">"Best cold brew in the city, hands down. The atmosphere is perfect for working or just unwinding. Plus the cinnamon rolls are dangerous."</p>
+              <div class="flex items-center gap-4">
+                <img src="http://static.photos/people/200x200/22" alt="James K." class="w-12 h-12 rounded-full object-cover">
+                <div>
+                  <p class="font-semibold">James K.</p>
+                  <p class="text-warmgray text-sm">Freelancer & Coffee Enthusiast</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-full flex-shrink-0 px-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-3xl p-8 lg:p-12 shadow-lg">
+              <div class="flex items-center gap-1 mb-4">
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+                <i data-lucide="star" class="w-5 h-5 text-caramel fill-caramel"></i>
+              </div>
+              <p class="font-display text-xl lg:text-2xl italic text-espresso/80 leading-relaxed mb-6">"I brought my mom here for the chai latte and now she's addicted. The staff is so warm and welcoming — truly a gem of a coffee shop."</p>
+              <div class="flex items-center gap-4">
+                <img src="http://static.photos/people/200x200/33" alt="Priya R." class="w-12 h-12 rounded-full object-cover">
+                <div>
+                  <p class="font-semibold">Priya R.</p>
+                  <p class="text-warmgray text-sm">Tea Lover Convert</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center gap-4 mt-8">
+          <button id="prevTestimonial" class="w-12 h-12 rounded-full border-2 border-mocha/30 flex items-center justify-center hover:bg-mocha hover:text-cream transition-colors">
+            <i data-lucide="chevron-left" class="w-5 h-5"></i>
+          </button>
+          <div class="flex gap-2" id="testimonialDots">
+            <button class="testimonial-dot w-3 h-3 rounded-full bg-caramel transition-all" data-index="0"></button>
+            <button class="testimonial-dot w-3 h-3 rounded-full bg-latte transition-all" data-index="1"></button>
+            <button class="testimonial-dot w-3 h-3 rounded-full bg-latte transition-all" data-index="2"></button>
+          </div>
+          <button id="nextTestimonial" class="w-12 h-12 rounded-full border-2 border-mocha/30 flex items-center justify-center hover:bg-mocha hover:text-cream transition-colors">
+            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="visit" class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div class="fade-left">
+          <div class="rounded-2xl overflow-hidden shadow-lg h-80 lg:h-full">
+            <img src="http://static.photos/cityscape/640x360/15" alt="Our location" class="w-full h-full object-cover">
+          </div>
+        </div>
+        <div class="fade-right">
+          <p class="text-caramel font-medium tracking-widest uppercase text-sm mb-3">Find Us</p>
+          <h2 class="font-display text-4xl lg:text-5xl font-bold mb-6">Come Say <span class="text-caramel italic">Hello</span></h2>
+          <p class="text-warmgray leading-relaxed mb-8">We're nestled in the heart of downtown — a cozy corner where the aroma always welcomes you in.</p>
+
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-caramel/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="map-pin" class="w-6 h-6 text-caramel"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-1">Address</h4>
+                <p class="text-warmgray text-sm">October Avenue, 7 <br>Ufa, NY 10012</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-caramel/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="clock" class="w-6 h-6 text-caramel"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-1">Hours</h4>
+                <p class="text-warmgray text-sm">Mon – Fri: 6:30 AM – 8:00 PM<br>Sat – Sun: 7:00 AM – 9:00 PM</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-caramel/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="phone" class="w-6 h-6 text-caramel"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-1">Contact</h4>
+                <p class="text-warmgray text-sm">+7 (965) 658-18-57<br>nenikeev107@gmail.com</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 bg-caramel/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="wifi" class="w-6 h-6 text-caramel"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-1">Amenities</h4>
+                <p class="text-warmgray text-sm">Free Wi-Fi · Power Outlets · Pet-Friendly Patio<br>Study Room · Parking Available</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="py-20 lg:py-28 bg-espresso text-cream">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div class="fade-left">
+          <p class="text-caramel font-medium tracking-widest uppercase text-sm mb-3">Stay Connected</p>
+          <h2 class="font-display text-4xl lg:text-5xl font-bold mb-6">Get Your Daily<br><span class="text-caramel italic">Dose</span></h2>
+          <p class="text-cream/70 leading-relaxed mb-8">Subscribe to our newsletter for exclusive deals, new menu announcements, and coffee tips delivered to your inbox.</p>
+          <div class="flex items-center gap-6">
+            <a href="#" class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-caramel transition-colors">
+              <i data-lucide="instagram" class="w-5 h-5"></i>
+            </a>
+            <a href="#" class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-caramel transition-colors">
+              <i data-lucide="facebook" class="w-5 h-5"></i>
+            </a>
+            <a href="#" class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center hover:bg-caramel transition-colors">
+              <i data-lucide="twitter" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+        <div class="fade-right">
+          <form id="newsletterForm" class="bg-mocha/30 backdrop-blur rounded-2xl p-8 lg:p-10 border border-white/10">
+            <h3 class="font-display text-2xl font-semibold mb-2">Join the Fragrant Family</h3>
+            <p class="text-cream/60 text-sm mb-6">No spam, just good vibes and great coffee talk.</p>
+            <div class="space-y-4">
+              <div>
+                <label for="nameInput" class="text-sm text-cream/80 mb-1 block">Your Name</label>
+                <input type="text" id="nameInput" placeholder="e.g. Alex" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-cream placeholder:text-cream/40 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel transition-colors">
+              </div>
+              <div>
+                <label for="emailInput" class="text-sm text-cream/80 mb-1 block">Email Address</label>
+                <input type="email" id="emailInput" placeholder="alex@example.com" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-cream placeholder:text-cream/40 focus:outline-none focus:border-caramel focus:ring-1 focus:ring-caramel transition-colors">
+              </div>
+              <button type="submit" class="w-full bg-caramel text-white py-3 rounded-xl font-semibold hover:bg-latte transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+                Subscribe
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-espresso border-t border-white/10 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+        <div>
+          <a href="#home" class="flex items-center gap-2 mb-4">
+            <i data-lucide="coffee" class="w-6 h-6 text-caramel"></i>
+            <span class="font-display text-xl font-bold text-cream">Fragrant<span class="text-caramel">Corner</span></span>
+          </a>
+          <p class="text-cream/50 text-sm leading-relaxed">Artisan coffee brewed with passion and served with love since 2026.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-cream mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="#home" class="text-cream/50 hover:text-caramel transition-colors text-sm">Home</a></li>
+            <li><a href="#menu" class="text-cream/50 hover:text-caramel transition-colors text-sm">Menu</a></li>
+            <li><a href="#about" class="text-cream/50 hover:text-caramel transition-colors text-sm">Our Story</a></li>
+            <li><a href="#testimonials" class="text-cream/50 hover:text-caramel transition-colors text-sm">Reviews</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-cream mb-4">Visit</h4>
+          <ul class="space-y-2">
+            <li><span class="text-cream/50 text-sm">7 October Avenue</span></li>
+            <li><span class="text-cream/50 text-sm">Republic of Bashkortostan</span></li>
+            <li><span class="text-cream/50 text-sm">Ufa, NY 10012</span></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-cream mb-4">Hours</h4>
+          <ul class="space-y-2">
+            <li><span class="text-cream/50 text-sm">Mon–Fri: 6:30AM–8PM</span></li>
+            <li><span class="text-cream/50 text-sm">Sat–Sun: 7AM–9PM</span></li>
+            <li><span class="text-cream/50 text-sm">+7 (965) 658-18-57</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-cream/40 text-sm">&copy; 2026 Fragrant Corner. All rights reserved.</p>
+        <p class="text-cream/40 text-sm">Crafted with <i data-lucide="heart" class="w-4 h-4 inline text-caramel fill-caramel"></i> and good coffee</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast fixed bottom-6 right-6 z-50 bg-mocha text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
+    <i data-lucide="check-circle" class="w-5 h-5 text-caramel"></i>
+    <span id="toastMsg" class="text-sm font-medium">Success!</span>
+  </div>
+
+  <button id="backToTop" class="fixed bottom-6 left-6 z-40 w-12 h-12 bg-caramel text-white rounded-full shadow-lg flex items-center justify-center hover:bg-mocha transition-all opacity-0 translate-y-4 pointer-events-none">
+    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+  </button>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        navbar.classList.add('bg-cream/95', 'backdrop-blur-lg', 'shadow-md');
+        navbar.classList.remove('bg-transparent');
+      } else {
+        navbar.classList.remove('bg-cream/95', 'backdrop-blur-lg', 'shadow-md');
+        navbar.classList.add('bg-transparent');
+      }
+    });
+
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (window.scrollY >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    const menuToggle = document.getElementById('menuToggle');
+    const menuClose = document.getElementById('menuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('open');
+    });
+    menuClose.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+    });
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.fade-up, .fade-left, .fade-right').forEach(el => {
+      observer.observe(el);
+    });
+
+    const catBtns = document.querySelectorAll('.cat-btn');
+    const menuCards = document.querySelectorAll('.menu-card');
+
+    catBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        catBtns.forEach(b => b.classList.remove('active-cat'));
+        btn.classList.add('active-cat');
+        const category = btn.dataset.category;
+        menuCards.forEach(card => {
+          if (category === 'all' || card.dataset.category === category) {
+            card.style.display = '';
+            setTimeout(() => {
+              card.classList.add('visible');
+            }, 50);
+          } else {
+            card.style.display = 'none';
+            card.classList.remove('visible');
+          }
+        });
+      });
+    });
+
+    const track = document.getElementById('testimonialTrack');
+    const dots = document.querySelectorAll('.testimonial-dot');
+    const prevBtn = document.getElementById('prevTestimonial');
+    const nextBtn = document.getElementById('nextTestimonial');
+    let currentSlide = 0;
+    const totalSlides = 3;
+
+    function goToSlide(index) {
+      currentSlide = index;
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('bg-caramel', i === currentSlide);
+        dot.classList.toggle('bg-latte', i !== currentSlide);
+      });
+    }
+
+    prevBtn.addEventListener('click', () => {
+      goToSlide(currentSlide === 0 ? totalSlides - 1 : currentSlide - 1);
+    });
+    nextBtn.addEventListener('click', () => {
+      goToSlide(currentSlide === totalSlides - 1 ? 0 : currentSlide + 1);
+    });
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        goToSlide(parseInt(dot.dataset.index));
+      });
+    });
+
+    let autoSlide = setInterval(() => {
+      goToSlide(currentSlide === totalSlides - 1 ? 0 : currentSlide + 1);
+    }, 6000);
+
+    track.parentElement.addEventListener('mouseenter', () => clearInterval(autoSlide));
+    track.parentElement.addEventListener('mouseleave', () => {
+      autoSlide = setInterval(() => {
+        goToSlide(currentSlide === totalSlides - 1 ? 0 : currentSlide + 1);
+      }, 6000);
+    });
+
+    const form = document.getElementById('newsletterForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('nameInput').value.trim();
+      const email = document.getElementById('emailInput').value.trim();
+      if (name && email) {
+        showToast(`Welcome, ${name}! You're now part of the Fragrant Family ☕`);
+        form.reset();
+      } else {
+        showToast('Please fill in all fields to subscribe.');
+      }
+    });
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 600) {
+        backToTop.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+        backToTop.classList.add('opacity-100', 'translate-y-0');
+      } else {
+        backToTop.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+        backToTop.classList.remove('opacity-100', 'translate-y-0');
+      }
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
